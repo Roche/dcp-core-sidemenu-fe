@@ -1,0 +1,134 @@
+// Colors: original build-time values are kept as literals / CSS var() fallbacks, so without a
+// runtime theme (see main.single-spa.ts applyRuntimeTheme) nothing changes visually.
+//   #B1B3B3 = $mat-white A400, #e5e6e7 = $mat-black 50, #ffffff = $mat-white 50,
+//   #0066cc = $primary-dc (runtime: --dcp-branding-primary-color),
+//   #C3D7FD = $mf-blue A500 (runtime: --dcp-branding-primary-subtle).
+
+.dc-sidebar {
+  &_subsection {
+    box-shadow: inset 0 0 4px #B1B3B3;
+    background: #e5e6e7;
+  }
+  &_link {
+    display: flex;
+    align-items: center;
+    min-width: 80px;
+    height: 60px;
+    color: #B1B3B3;
+    text-decoration: none;
+    position: relative;
+    outline: none;
+    // @open-dcp/styles adds `a { transition: color .2s }` globally; keep the original instant hover.
+    transition: none;
+    /* Ensure ripple elements don't visually accumulate during rapid interactions */
+    overflow: hidden;
+
+    /* Remove stale ripple elements that may persist during DOM reparenting */
+    ::ng-deep .mat-ripple-element {
+      animation: mat-ripple-leave 400ms ease-out;
+    }
+
+    &_submenu-icon {
+      position: absolute;
+      bottom: 5px;
+      left: calc(50% - 8px);
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+      color: #B1B3B3 !important;
+      &--opened {
+        bottom: auto;
+        left: auto;
+        right: 30px;
+      }
+    }
+
+    &_icon {
+      margin: 0 28px;
+      font-size: 28px;
+      color: #B1B3B3;
+      &.mat-icon.material-icons.mat-icon-no-color {
+        font-size: 22px;
+        height: 22px;
+        width: 28px;
+        text-align: center;
+        color: #B1B3B3;
+      }
+    }
+
+    &_text {
+      padding-right: 28px;
+      color: #B1B3B3;
+      width: max-content;
+      &--opened-menu {
+        margin-left: 28px;
+      }
+    }
+
+    &_active, &:hover {
+      color: var(--dcp-branding-primary-color, #0066cc);
+      background: var(--dcp-branding-primary-subtle, #C3D7FD);
+
+
+      &_text {
+        color: var(--dcp-branding-primary-color, #0066cc);
+      }
+
+      .dc-sidebar_link_icon {
+        &:before, &.mat-icon.material-icons.mat-icon-no-color {
+          color: var(--dcp-branding-primary-color, #0066cc);
+        }
+      }
+      &:before {
+        content: '';
+        width: 4px;
+        height: 60px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: var(--dcp-branding-primary-color, #0066cc);
+      }
+
+    }
+  }
+  &_burger {
+    height: var(--header-height);
+
+    &.dc-sidebar_link_active, &:hover {
+      color: var(--dcp-branding-primary-color, #0066cc);
+      background: #ffffff;
+
+      .mat-icon {
+        color: var(--dcp-branding-primary-color, #0066cc);
+      }
+
+      &:before {
+        content: none;
+      }
+
+    }
+  }
+}
+
+.font-size-18 {
+  font-size: 18px !important;
+}
+
+.pl-2px {
+  padding-left: 2px;
+}
+
+.pl-7px {
+  padding-left: 7px
+}
+
+/* Keyframe animation to ensure ripples exit cleanly */
+@keyframes mat-ripple-leave {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+

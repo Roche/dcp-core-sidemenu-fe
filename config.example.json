@@ -1,0 +1,4 @@
+{
+  "production": false,
+  "gatewayUrl": "https://api.example.com:8199"
+}

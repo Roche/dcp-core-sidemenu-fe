@@ -1,0 +1,146 @@
+<div class="dc-sidebar" (appClickOutside)="showFullMenuText = false">
+  <div class="dc-sidebar_link dc-sidebar_burger cursor-pointer mb-3" [class.dc-sidebar_link_active]="showFullMenuText"
+    matRipple (click)="showFullMenuText = !showFullMenuText">
+    <span class="icon-menu dc-sidebar_link_icon"></span>
+  </div>
+
+  <ng-container *ngFor="let button of mainMenuConfig">
+    <ng-container *ngIf="!button.isModule; else moduleTmp">
+      <mat-divider *ngIf="button.dividerBefore"></mat-divider>
+      <a [ngClass]="{'dc-sidebar_link_active': routeIsActive(button.url)}"
+          angulartics2On="click"
+          [angularticsAction]="button.angularticsAction"
+          angularticsCategory="Main menu"
+          *ngxPermissionsOnly="button.ngxPermissionsOnly"
+          matRipple
+          class="dc-sidebar_link cursor-pointer"
+          [matTooltip]="button.text | translate"
+          matTooltipPosition="above"
+          [matTooltipDisabled]="showFullMenuText || isMobile"
+         (click)="navigateToModuleUrl(button.url, button);  showFullMenuText = false">
+
+        <span class="{{button.iconClass}} dc-sidebar_link_icon" *ngIf="!button.materialIcon"></span>
+        <mat-icon *ngIf="button.materialIcon"
+                  class="dc-sidebar_link_icon material-icons-outlined">
+          {{button.iconClass}}
+        </mat-icon>
+
+        <span class="dc-sidebar_link_text"
+              *ngIf="showFullMenuText || isMobile"
+              [innerHTML]="button.text | translate">
+        </span>
+
+      </a>
+    </ng-container>
+
+    <ng-template #moduleTmp>
+      <div *ngIf="checkForActiveModule(button)">
+        <div *ngxPermissionsOnly="button.ngxPermissionsOnly">
+          <mat-divider></mat-divider>
+
+          <a angulartics2On="click"
+             [angularticsAction]="button.parent.angularticsAction"
+             angularticsCategory="Main menu"
+             *ngxPermissionsOnly="button.parent.ngxPermissionsOnly"
+             matRipple
+             class="dc-sidebar_link cursor-pointer"
+             [matTooltip]="button.parent.tooltip | translate"
+             matTooltipPosition="above"
+             [matTooltipDisabled]="showFullMenuText || isMobile"
+             [ngClass]="{'dc-sidebar_link_active': false }"
+             (click)="toggleMenuModule($event, button.menuModule)">
+
+            <span class="dc-sidebar_link_text pr-0"
+                  [ngClass]="{
+                    'mx-auto': !showFullMenuText && !isMobile,
+                    'dc-sidebar_link_text--opened-menu': showFullMenuText || isMobile
+                  }">
+              {{ showFullMenuText || isMobile ? (button.parent.textLong | translate)
+              : (button.parent.textShort | translate)}}
+            </span>
+            <mat-icon class="dc-sidebar_link_submenu-icon"
+                      *ngIf="!menuState.value.expanded[button.menuModule]"
+                      [ngClass]="{
+                        'dc-sidebar_link_submenu-icon--opened': showFullMenuText || isMobile
+                      }">
+              keyboard_arrow_down
+            </mat-icon>
+
+            <mat-icon class="dc-sidebar_link_submenu-icon"
+                      *ngIf="menuState.value.expanded[button.menuModule]"
+                      [ngClass]="{
+                        'dc-sidebar_link_submenu-icon--opened': showFullMenuText || isMobile
+                      }">
+              keyboard_arrow_up
+            </mat-icon>
+
+          </a>
+
+          <div class="dc-sidebar_subsection" *ngIf="menuState.value.expanded[button.menuModule]">
+            <ng-container *ngFor="let subButton of button.subMenu">
+
+              <ng-container *ngIf="isCustomModuleNavigation(subButton); else angularRouter">
+                <a angulartics2On="click"
+                   [angularticsAction]="subButton.angularticsAction"
+                   angularticsCategory="Main menu"
+                   matRipple
+                   *ngxPermissionsOnly="subButton.ngxPermissionsOnly || button.parent.ngxPermissionsOnly"
+                   class="dc-sidebar_link cursor-pointer"
+                   [ngClass]="{'dc-sidebar_link_active': routeIsActive(subButton.url)}"
+                   [matTooltip]="subButton.text | translate"
+                   matTooltipPosition="above"
+                   [matTooltipDisabled]="showFullMenuText || isMobile"
+                   (click)="navigateToModuleUrl(subButton.url, button); showFullMenuText = false">
+
+                <span class="{{subButton.iconClass}} dc-sidebar_link_icon"
+                      *ngIf="!subButton.materialIcon">
+                </span>
+                  <mat-icon *ngIf="subButton.materialIcon"
+                            class="dc-sidebar_link_icon material-icons-outlined">
+                    {{subButton.iconClass}}
+                  </mat-icon>
+
+                  <span class="dc-sidebar_link_text"
+                        *ngIf="showFullMenuText || isMobile"
+                        [innerHTML]="subButton.text | translate">
+                </span>
+
+                </a>
+              </ng-container>
+
+              <ng-template #angularRouter>
+                <a [ngClass]="{'dc-sidebar_link_active': routeIsActive(subButton.url)}"
+                   angulartics2On="click"
+                   [angularticsAction]="subButton.angularticsAction"
+                   angularticsCategory="Main menu"
+                   matRipple
+                   *ngxPermissionsOnly="subButton.ngxPermissionsOnly || button.parent.ngxPermissionsOnly"
+                   class="dc-sidebar_link cursor-pointer"
+                   [matTooltip]="subButton.text | translate"
+                   matTooltipPosition="above"
+                   [matTooltipDisabled]="showFullMenuText || isMobile"
+                   (click)="navigate('/app/' + siteContext.value + subButton.url); showFullMenuText = false">
+
+                <span class="{{subButton.iconClass}} dc-sidebar_link_icon"
+                      *ngIf="!subButton.materialIcon">
+                </span>
+                  <mat-icon *ngIf="subButton.materialIcon"
+                            class="dc-sidebar_link_icon material-icons-outlined">
+                    {{subButton.iconClass}}
+                  </mat-icon>
+
+                  <span class="dc-sidebar_link_text"
+                        *ngIf="showFullMenuText || isMobile"
+                        [innerHTML]="subButton.text | translate">
+                </span>
+
+                </a>
+              </ng-template>
+
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>

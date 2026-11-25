@@ -1,0 +1,18 @@
+// Side-menu-specific: the templates use Bootstrap utility classes (mb-3, mx-auto, pr-0, ...)
+@import "bootstrap/scss/bootstrap";
+
+@import "@open-dcp/styles";
+@import "@open-dcp/angular-styles";
+
+// Side-menu-specific: prevent temporary fullscreen stretch when single-spa parks side menu root under <body>.
+body > app-side-menu-root.dc-app-root {
+  position: fixed !important;
+  left: -100vw !important;
+  top: -100vh !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+

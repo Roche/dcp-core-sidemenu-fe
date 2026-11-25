@@ -1,0 +1,4 @@
+{
+    "production":  true,
+    "gatewayUrl":  "${DCP_GATEWAY_URL}"
+}
